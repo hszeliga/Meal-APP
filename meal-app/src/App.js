@@ -7,9 +7,14 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ErrorPage from "./pages/Home/404/404";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import axios from "./Axios";
+
 function App() {
-  const { user } = useContext(MyContext);
+  const { user, setUser } = useContext(MyContext);
+  useEffect(()=>{
+    axios.post("/auto-login").then(({data}) =>setUser(data));
+  },[]);
   return (
     <Router>
       <Navbar />

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const jwt = require ('jsonwebtoken');
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -34,5 +36,23 @@ userSchema.statics.findByCredentials = async function (email, password) {
   }
   return user;
 };
+
+userSchema.methods.generateToken = async function (){
+    const user = this;
+    const token = await jwt.sign({_id: user._id},"mealsSecret",{expiresIn: "24h"});
+    user.token = token;
+    await user.save();
+    return token;
+}
+
+userSchema.methods.toJSON = function(){
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  delete userObject._id;
+  return userObject;
+}
+
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;

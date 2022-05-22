@@ -2,8 +2,19 @@ import React, { useContext } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { MyContext } from "../context";
+import {useNavigate} from 'react-router-dom';
+import axios from "../Axios";
 function AppNavbar() {
-  const { user } = useContext(MyContext);
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(MyContext);
+  const handleLogout = () => {
+     axios.post('/logout')
+     .then(res => {
+       localStorage.removeItem("token");
+       setUser(null);
+       navigate("/", { replace: true });   //history.replace("/");
+     })
+  }
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -22,6 +33,7 @@ function AppNavbar() {
               </LinkContainer>
             </Nav>
           )}
+          {user &&  <Nav.Link onClick ={handleLogout}>Logout</Nav.Link>}
         </Navbar.Collapse>
       </Container>
     </Navbar>
