@@ -4,6 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { MyContext } from "../context";
 import {useNavigate} from 'react-router-dom';
 import axios from "../Axios";
+
 function AppNavbar() {
   const navigate = useNavigate();
   const { user, setUser } = useContext(MyContext);
@@ -33,7 +34,14 @@ function AppNavbar() {
               </LinkContainer>
             </Nav>
           )}
-          {user &&  <Nav.Link onClick ={handleLogout}>Logout</Nav.Link>}
+          {user && (
+          <> 
+            <LinkContainer to="/my-favorites">
+              <Nav.Link>Favorites</Nav.Link>
+            </LinkContainer>
+            <Nav.Link onClick ={handleLogout}>Logout</Nav.Link>
+          </>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

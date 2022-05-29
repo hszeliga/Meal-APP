@@ -2,8 +2,10 @@ import axios from "../../Axios";
 import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import { MyContext } from "../../context";
+import {useNavigate} from 'react-router-dom';
 
 function Signup() {
+  const navigate= useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(MyContext);
@@ -17,6 +19,7 @@ function Signup() {
       .then(({ data }) => {
       setUser(data);
       localStorage.setItem('token',data.token);
+      navigate("/", { replace: true });
     })
       .catch((err) => console.log(err));
   }

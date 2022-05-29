@@ -39,4 +39,20 @@ routes.post('/logout',authUser, async (req, res) => {
  res.status(200).send();
 })
 
+routes.post('/add-favorites', authUser, async(req, res) => {
+  const {mealId} = req.body;
+  const user = req.user;
+  user.favorites.push(mealId);
+  await user.save();
+  res.status(200).send(user);
+})
+
+routes.post('/remove-favorites', authUser, async(req, res) => {
+  const {mealId} = req.body;
+  const user = req.user;
+  user.favorites = user.favorites.filter(id => id !== mealId);
+  await user.save();
+  res.status(200).send(user);
+})
+
 module.exports = routes;

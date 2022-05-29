@@ -1,10 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-function MealModal({ title, description }) {
-  const [show, setShow] = useState(false);
+import { MyContext } from "../../context";
+import axios from "../../Axios.js";
 
+function MealModal({ title, description, idMeal }) {
+  const [show, setShow] = useState(false);
+  const {user, setUser} = useContext(MyContext);
+  const [loading, setLoading] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleAddToFavorites =() =>{
+    setLoading(true);
+    axios.post("/add-favorites", {mealId: idMeal})
+    .then(({data}) => {
+      setLoading(false);
+      setUser(data);
+    })
+    .catch((error)=> {
+      setLoading(false);
+      console.log(error)
+    });
+  };
+  const handleRemoveFromFavorites =() =>{
+    setLoading(true);
+    axios.post("/remove-favorites", {mealId: idMeal})
+    .then(({data}) => {
+      setLoading(false);
+      setUser(data);
+    })
+    .catch((error)=> {
+      setLoading(false);
+      console.log(error);
+    });
+  };
 
   return (
     <>
@@ -21,9 +50,17 @@ function MealModal({ title, description }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
+          {user && (
+              <>
+              {user.favorites.includes(idMeal)?(
+                <Button variant = "danger" onClick={handleRemoveFromFavorites } disabled = {loading}>Remove From Favorites</Button>
+              ):(
+              <Button variant="primary" onClick={handleAddToFavorites} disabled = {loading}>
+                Add To Favorites
+              </Button>
+              )}
+              </>
+            )}
         </Modal.Footer>
       </Modal>
     </>

@@ -2,7 +2,10 @@ import axios from "../../Axios";
 import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import { MyContext } from "../../context";
+import {useNavigate} from 'react-router-dom';
+
 function Login() {
+  const navigate= useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(MyContext);
@@ -12,10 +15,11 @@ function Login() {
       return alert("Please fill out the fields");
     }
     axios
-      .post("/login", { email, password })
-      .then(({ data }) =>{ 
+    .post("/login", { email, password })
+    .then(({ data }) =>{ 
       localStorage.setItem('token',data.token);
       setUser(data);
+      navigate("/", { replace: true });
   })
       .catch((err) => console.log(err));
   }
